@@ -1,0 +1,13 @@
+﻿node_modules/
+uploads/
+
+.env
+.env.local
+
+.DS_Store
+Thumbs.db
+
+*.log
+
+admin.html
+

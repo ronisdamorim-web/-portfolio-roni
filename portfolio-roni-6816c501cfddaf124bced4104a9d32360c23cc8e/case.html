@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case - Roni Amorim</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #151515;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #8b7fff;
+            --border: #2a2a2a;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+        }
+
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .case-hero {
+            margin-top: 100px;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .case-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(139, 127, 255, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .status-badge {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            color: #ffc107;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .case-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .case-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 3rem;
+        }
+
+        .case-paper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(15, 15, 15, 0.92);
+            padding: 56px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            margin-bottom: 6rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .case-content {
+            padding: 0;
+            max-width: 100%;
+        }
+
+        .content-section {
+            margin-bottom: 6rem;
+        }
+
+        .case-gallery-paper {
+            max-width: 1200px;
+            margin: 4rem auto;
+            background: rgba(15, 15, 15, 0.92);
+            padding: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: block;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        .section-text {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .gallery-item {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-bottom: 0;
+            /* Remove margem antiga */
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            display: block;
+        }
+
+        .btn-premium {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: #fff;
+            color: #000;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-radius: 100px;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            background: #fff;
+        }
+
+        /* Ficha Técnica */
+        .technical-sheet {
+            max-width: 900px;
+            margin: 0 auto 4rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem 1.5rem;
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+        }
+
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .tech-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .tech-value {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: #e0e0e0;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .tech-link {
+            color: #fff;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.2s;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .tech-link:hover {
+            border-bottom-color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .technical-sheet {
+                grid-template-columns: 1fr 1fr;
+                padding: 1.5rem;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: #fff;
+            font-size: 3rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .case-hero {
+                margin-top: 80px;
+                padding: 2rem 1rem;
+            }
+        }
+
+        .section-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            background: var(--bg-primary);
+        }
+
+        .back-to-top {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 100px;
+        }
+
+        .back-to-top:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+    </style>
+    <script src="assets/js/db.js"></script>
+</head>
+
+<body>
+    <canvas id="starfield"></canvas>
+
+    <!-- Lightbox Container -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightboxImg" class="lightbox-img" src="" alt="">
+    </div>
+
+    <nav>
+        <a href="index.html" class="nav-logo">Roni Amorim</a>
+        <a href="index.html#cases" class="back-btn">← Voltar para Home</a>
+    </nav>
+
+    <div id="caseContainer"></div>
+
+    <!-- Footer -->
+    <footer>
+        <button id="backToTop" class="back-to-top">
+            ↑ Voltar ao início
+        </button>
+        <p>© 2026 Roni Amorim. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- ✅ DB OFICIAL PUBLICADO PELO CMS -->
+
+    <script>
+        // Starfield
+        const canvas = document.getElementById("starfield");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth * window.devicePixelRatio;
+            canvas.height = window.innerHeight * window.devicePixelRatio;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        const stars = [];
+        for (let i = 0; i < 120; i++) {
+            stars.push({
+                ox: Math.random() * window.innerWidth,
+                oy: Math.random() * window.innerHeight,
+                x: 0, y: 0,
+                r: Math.random() * 1.2 + 0.5,
+                baseOpacity: Math.random() * 0.5 + 0.4,
+                twinkleSpeed: Math.random() * 0.005 + 0.003,
+                twinkleOffset: Math.random() * Math.PI * 2
+            });
+            stars[i].x = stars[i].ox;
+            stars[i].y = stars[i].oy;
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            const time = Date.now();
+            for (const s of stars) {
+                s.opacity = s.baseOpacity + Math.sin(time * s.twinkleSpeed + s.twinkleOffset) * 0.08;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+                ctx.fill();
+            }
+            requestAnimationFrame(animateStars);
+        }
+        animateStars();
+
+        // Load Case
+        function getCaseId() {
+            // Tenta query string (?id=...)
+            const params = new URLSearchParams(window.location.search);
+            const queryId = params.get('id');
+            if (queryId) return queryId;
+
+            // Tenta hash (#...)
+            const hash = window.location.hash;
+            if (hash) return hash.substring(1); // Remove o #
+
+            return null;
+        }
+
+        function loadCase() {
+            const caseId = getCaseId();
+            let caseData = null;
+            let source = "";
+
+            // 1. Tentar LocalStorage (Edição Local)
+            try {
+                const stored = localStorage.getItem('portfolioCases');
+                if (stored) {
+                    const localCases = JSON.parse(stored);
+                    if (Array.isArray(localCases)) {
+                        caseData = localCases.find(c => c.id === caseId);
+                        if (caseData) source = "LocalStorage";
+                    }
+                }
+            } catch (e) {
+                console.error("Erro ao ler LocalStorage", e);
+            }
+
+            // 2. Se não achou no Storage, tentar DB_CONTENT (Oficial/Publicado)
+            if (!caseData && window.DB_CONTENT && window.DB_CONTENT.cases) {
+                caseData = window.DB_CONTENT.cases.find(c => c.id === caseId);
+                if (caseData) source = "DB_CONTENT";
+            }
+
+            // Debug: Mostrar Info se falhar ou se estiver em localhost
+            if (!caseData) {
+                console.error(`Case não encontrado: ${caseId}`);
+                showNotFound(caseId);
+                return;
+            }
+
+            renderCase(caseData);
+        }
+
+        function showNotFound() {
+            document.getElementById('caseContainer').innerHTML = `
+                <div class="not-found">
+                    <h1 class="not-found-title">Case não encontrado</h1>
+                    <p class="not-found-text">O case que você está procurando não existe ou foi removido.</p>
+                    <a href="index.html#cases" class="back-btn">Voltar para Home</a>
+                </div>
+            `;
+        }
+
+        function renderCase(data) {
+            document.title = `${data.title} - Roni Amorim`;
+
+            let sectionsHTML = '';
+            // Labels apenas, sem títulos default
+            // Labels apenas, sem títulos default
+            const sectionLabels = {
+                context: { label: '01. Contexto' },
+                problem: { label: '02. Problema' },
+                objective: { label: '03. Objetivo' },
+                process: { label: '04. Processo' },
+                solution: { label: '05. Solução' },
+                result: { label: '06. Resultado' },
+                nextSteps: { label: '07. Próximos Passos' }
+            };
+
+            if (data.sections) {
+                Object.keys(sectionLabels).forEach(key => {
+                    const sectionData = data.sections[key];
+                    if (!sectionData) return;
+
+                    let content = '';
+                    let subtitle = '';
+
+                    if (typeof sectionData === 'string') {
+                        // Legado: string vira conteúdo, sem subtítulo
+                        content = sectionData;
+                    } else if (typeof sectionData === 'object') {
+                        content = sectionData.content;
+                        subtitle = sectionData.subtitle;
+                    }
+
+                    if (content && content.trim()) {
+                        sectionsHTML += `
+                            <section class="content-section">
+                                <span class="section-label">${sectionLabels[key].label}</span>
+                                ${subtitle ? `<h3 class="section-subtitle">${subtitle}</h3>` : ''}
+                                <div class="section-text">${content}</div>
+                            </section>
+                        `;
+                    }
+                });
+            }
+
+            let galleryHTML = '';
+            if (data.gallery && data.gallery.length > 0) {
+                galleryHTML = '<div class="gallery-grid">';
+                data.gallery.forEach(item => {
+                    galleryHTML += `
+                        <div class="gallery-item" onclick="openLightbox('${item.url}')">
+                            <img src="${item.url}" alt="${item.caption || ''}" class="gallery-image">
+                            ${item.caption ? `<p class="gallery-caption">${item.caption}</p>` : ''}
+                        </div>
+                    `;
+                });
+                galleryHTML += '</div>';
+            }
+
+            // Ficha Técnica
+            let techSheetHTML = '';
+            const techFields = [
+                { key: 'role', label: 'Meu Papel' },
+                { key: 'techStack', label: 'Stack' },
+                { key: 'platform', label: 'Plataforma' },
+                { key: 'deploy', label: 'Deploy' },
+                { key: 'year', label: 'Ano' },
+                { key: 'duration', label: 'Duração' },
+                { key: 'tools', label: 'Ferramentas' }
+            ];
+
+            const hasTechInfo = techFields.some(f => data[f.key]) || data.repoUrl;
+
+            if (hasTechInfo) {
+                techSheetHTML = '<div class="technical-sheet">';
+                // Título discreto
+                techSheetHTML += '<div style="grid-column: 1/-1; text-align: center; margin-bottom: 0.5rem;"><span style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 100px;">Ficha Técnica</span></div>';
+
+                techFields.forEach(field => {
+                    if (data[field.key]) {
+                        techSheetHTML += `
+                            <div class="tech-item">
+                                <span class="tech-label">${field.label}</span>
+                                <span class="tech-value">${data[field.key]}</span>
+                            </div>
+                        `;
+                    }
+                });
+
+                if (data.repoUrl) {
+                    techSheetHTML += `
+                            <div class="tech-item">
+                                <span class="tech-label">Repositório</span>
+                                <a href="${data.repoUrl}" target="_blank" rel="noopener noreferrer" class="tech-value tech-link">Ver GitHub ↗</a>
+                            </div>
+                        `;
+                }
+
+                techSheetHTML += '</div>';
+            }
+
+            // Renderiza dentro do Container Paper
+            document.getElementById('caseContainer').innerHTML = `
+                <section class="case-hero">
+                    <div class="case-tags">
+                        ${data.status === 'andamento' ? '<span class="status-badge">Em andamento</span>' : ''}
+                        ${data.tags ? data.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                    </div>
+                    <h1 class="case-title">${data.title}</h1>
+                    ${data.subtitle ? `<p class="case-subtitle" style="font-size: 1.25rem; color: var(--text-secondary); max-width: 700px; margin-bottom: ${data.projectLink ? '2rem' : '3rem'};">${data.subtitle}</p>` : ''}
+                    
+                    ${data.projectLink ? `
+                        <div style="margin-bottom: 3rem; text-align: center;">
+                            <a href="${data.projectLink}" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                                Ver Projeto ↗
+                            </a>
+                        </div>
+                    ` : ''}
+                </section>
+
+                ${techSheetHTML}
+
+                <div class="case-paper">
+                    <div class="case-content">
+                        ${sectionsHTML}
+                    </div>
+                </div>
+
+                ${data.gallery && data.gallery.length > 0 ? `
+                    <div class="case-gallery-paper">
+                        <h2 style="text-align: center; margin-bottom: 2.5rem; font-family: 'Cormorant Garamond', serif; font-size: 2.5rem;">Galeria do Projeto</h2>
+                        ${galleryHTML}
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        // ========================
+        // Lightbox Logic
+        // ========================
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightboxImg');
+            img.src = src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Evita scroll
+        }
+
+        function closeLightbox(e) {
+            // Fecha se clicar fora da imagem ou no botão de fechar
+            if (e.target.id === 'lightbox' || e.target.classList.contains('lightbox-close')) {
+                const lightbox = document.getElementById('lightbox');
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    document.getElementById('lightboxImg').src = '';
+                }, 300);
+            }
+        }
+
+        // Fechar com ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const lightbox = document.getElementById('lightbox');
+                if (lightbox.classList.contains('active')) {
+                    lightbox.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+        });
+
+        // Back to Top Logic
+        const backToTopBtn = document.getElementById('backToTop');
+        if (backToTopBtn) {
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        loadCase();
+    </script>
+</body>
+
+</html>

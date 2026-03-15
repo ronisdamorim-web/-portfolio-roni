@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roni Amorim | Product Designer</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #151515;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #8b7fff;
+            --accent-light: #a99fff;
+            --border: #2a2a2a;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Starfield Background */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .hero>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .hero-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 12vw, 8rem);
+            font-weight: 300;
+            margin-bottom: 1rem;
+            line-height: 1;
+            position: relative;
+            display: inline-block;
+        }
+
+        .matrix-glitching {
+            color: #00ff66 !important;
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.65);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 4rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        .cta-button {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 1rem 2.5rem;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .cta-button:hover::before {
+            left: 0;
+        }
+
+        .cta-button:hover {
+            color: var(--bg-primary);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .scroll-arrow {
+            width: 1px;
+            height: 3rem;
+            background: linear-gradient(to bottom, transparent, var(--accent));
+            animation: scroll-pulse 2s infinite;
+        }
+
+        @keyframes scroll-pulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(10px);
+            }
+        }
+
+        /* Cases Section */
+        .cases-section {
+            padding: 8rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 300;
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .case-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .case-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+        }
+
+        .case-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+        }
+
+        .case-content {
+            padding: 2rem;
+            pointer-events: none;
+        }
+
+        .case-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .case-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .case-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            background: rgba(139, 127, 255, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .status-badge {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            color: #ffc107;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 8rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            text-align: left;
+        }
+
+        .about-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .about-profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+            display: none;
+            /* Hide by default */
+        }
+
+        .about-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin-bottom: 2rem;
+            white-space: pre-wrap;
+        }
+
+        .about-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .about-meta-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .about-meta-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            min-width: 100px;
+        }
+
+        .about-meta-value {
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 8rem 2rem 4rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .contact-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 300;
+            margin-bottom: 3rem;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            padding: 1rem 2rem;
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 400px;
+            justify-content: center;
+            background: var(--bg-primary);
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-link:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateX(10px);
+        }
+
+        .contact-link.icon-only {
+            padding: 1rem 2rem;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .contact-link.icon-only .contact-icon {
+            font-size: 1.5rem;
+        }
+
+        .contact-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .back-to-top {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 100px;
+        }
+
+        .back-to-top:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cases-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Starfield Background -->
+    <canvas id="starfield"></canvas>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-label">Portfólio</div>
+        <h1 class="hero-name" id="heroName" data-glitch>Roni Amorim</h1>
+        <p class="hero-subtitle">Product Designer | UX/UI | Front-end</p>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+            <a href="#cases" class="cta-button">Ver cases ↓</a>
+            <a href="#sobre" class="cta-button">Sobre mim</a>
+            <a href="#contato" class="cta-button">Contato</a>
+        </div>
+        <div class="scroll-indicator">
+            <span>Iniciar leitura</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Cases Section -->
+    <section class="cases-section" id="cases">
+        <h2 class="section-title">Projetos Selecionados</h2>
+        <div class="cases-grid" id="casesGrid"></div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="sobre">
+        <section class="about-section" id="sobre">
+            <h2 class="section-title" id="aboutTitle">Sobre mim</h2>
+            <div class="about-content">
+                <div class="about-header">
+                    <img id="aboutProfileImage" class="about-profile-img" alt="Foto de Perfil">
+                </div>
+                <p class="about-text" id="aboutText"></p>
+                <div class="about-meta">
+                    <div class="about-meta-item">
+                        <span class="about-meta-label">Localização</span>
+                        <span class="about-meta-value" id="aboutLocation"></span>
+                    </div>
+                    <div class="about-meta-item">
+                        <span class="about-meta-label">Status</span>
+                        <span class="about-meta-value" id="aboutStatus"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section" id="contato">
+            <h2 class="contact-title">Vamos Conversar</h2>
+            <div class="contact-links">
+                <a href="mailto:roni@example.com" class="contact-link">
+                    <span class="contact-icon">✉</span>
+                    <span>roni@example.com</span>
+                </a>
+                <a href="https://linkedin.com/in/seu-perfil" target="_blank" class="contact-link">
+                    <span class="contact-icon">in</span>
+                    <span>LinkedIn</span>
+                </a>
+                <a href="https://wa.me/5511999999999" target="_blank" class="contact-link">
+                    <span class="contact-icon">📱</span>
+                    <span>WhatsApp</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <button id="backToTop" class="back-to-top">
+                ↑ Voltar ao início
+            </button>
+            <p>© 2026 Roni Amorim. Todos os direitos reservados.</p>
+        </footer>
+
+        <!-- ✅ DB OFICIAL PUBLICADO PELO CMS -->
+        <script src="assets/js/db.js"></script>
+
+        <script>
+            // =====================
+            // Starfield + Magnet Effect
+            // =====================
+            const canvas = document.getElementById("starfield");
+            const ctx = canvas.getContext("2d");
+            const isMobile = window.innerWidth < 768;
+
+            let w, h;
+            function resizeCanvas() {
+                w = canvas.width = window.innerWidth * window.devicePixelRatio;
+                h = canvas.height = window.innerHeight * window.devicePixelRatio;
+                canvas.style.width = window.innerWidth + 'px';
+                canvas.style.height = window.innerHeight + 'px';
+                ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            }
+            resizeCanvas();
+            window.addEventListener("resize", resizeCanvas);
+
+            const stars = [];
+            const STAR_COUNT = 120;
+
+            for (let i = 0; i < STAR_COUNT; i++) {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                stars.push({
+                    ox: x, oy: y, x: x, y: y,
+                    r: Math.random() * 1.2 + 0.5,
+                    baseOpacity: Math.random() * 0.5 + 0.4,
+                    opacity: Math.random() * 0.5 + 0.4,
+                    twinkleSpeed: Math.random() * 0.005 + 0.003,
+                    twinkleOffset: Math.random() * Math.PI * 2
+                });
+            }
+
+            const mouse = { x: -9999, y: -9999 };
+
+            if (!isMobile) {
+                window.addEventListener("mousemove", (e) => {
+                    mouse.x = e.clientX;
+                    mouse.y = e.clientY;
+                });
+                window.addEventListener("mouseleave", () => {
+                    mouse.x = -9999;
+                    mouse.y = -9999;
+                });
+            }
+
+            function animateStars() {
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                const time = Date.now();
+
+                for (const s of stars) {
+                    s.opacity = s.baseOpacity + Math.sin(time * s.twinkleSpeed + s.twinkleOffset) * 0.08;
+
+                    if (!isMobile && mouse.x > -9999) {
+                        const dx = mouse.x - s.x;
+                        const dy = mouse.y - s.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        const radius = 200;
+                        const strength = 0.25;
+
+                        if (dist < radius && dist > 1) {
+                            const pull = (1 - dist / radius) * strength;
+                            s.x += dx * pull;
+                            s.y += dy * pull;
+                        }
+                    }
+
+                    s.x += (s.ox - s.x) * 0.04;
+                    s.y += (s.oy - s.y) * 0.04;
+
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(animateStars);
+            }
+
+            animateStars();
+
+            // =====================
+            // Glitch Effect with Matrix Green
+            // =====================
+            function glitch(el) {
+                if (!el.dataset.glitch) el.dataset.glitch = el.innerText;
+                const text = el.dataset.glitch;
+                const words = text.split(" ");
+                const stop = Math.max(...words.map((w) => w.length));
+                if (el.dataset.interval) clearInterval(Number(el.dataset.interval));
+                el.classList.add("matrix-glitching");
+
+                let min = 5, iterations = 0;
+                const interval = setInterval(() => {
+                    el.innerText = words.map((word) => {
+                        return word.split("").map((letter, index) => {
+                            if (iterations > index + min || index > iterations) return letter;
+                            else return Math.floor(Math.random() * 10);
+                        }).join("");
+                    }).join(" ");
+
+                    el.dataset.interval = String(interval);
+                    iterations++;
+
+                    if (iterations >= stop + min) {
+                        clearInterval(Number(el.dataset.interval));
+                        el.innerText = text;
+                        el.classList.remove("matrix-glitching");
+                    }
+                }, 75);
+            }
+
+            const glitchEl = document.querySelectorAll("[data-glitch]");
+            glitchEl.forEach((el) => {
+                el.addEventListener("mouseover", () => glitch(el));
+                if (window.innerWidth < 768) setTimeout(() => glitch(el), 600);
+            });
+
+            // =====================
+            // Smooth Scroll
+            // =====================
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+
+            // Back to Top Logic
+            const backToTopBtn = document.getElementById('backToTop');
+            if (backToTopBtn) {
+                backToTopBtn.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+
+            // =====================
+            // Helpers
+            // =====================
+            function safeJSONParse(jsonString, fallback) {
+                try {
+                    return JSON.parse(jsonString);
+                } catch (e) {
+                    return fallback;
+                }
+            }
+
+            // =====================
+            // Load and Render Contact
+            // =====================
+            function loadContact() {
+                if (window.DB_CONTENT && window.DB_CONTENT.contact) {
+                    renderContact(window.DB_CONTENT.contact);
+                    return;
+                }
+
+                const stored = localStorage.getItem('portfolioContact');
+                if (stored) {
+                    renderContact(safeJSONParse(stored, {}));
+                    return;
+                }
+
+                renderContact({
+                    email: 'roniamorim.ux@gmail.com',
+                    linkedinUrl: 'https://www.linkedin.com/in/roni-ux/',
+                    linkedinLabel: 'linkedin.com/in/roni-ux',
+                    whatsappUrl: 'https://wa.me/5511914665122',
+                    whatsappLabel: 'WhatsApp: (11) 91466-5122'
+                });
+            }
+
+            function renderContact(contact) {
+                const contactLinks = document.querySelector('.contact-links');
+                if (!contactLinks) return;
+
+                const email = contact?.email || 'roniamorim.ux@gmail.com';
+
+                contactLinks.innerHTML = `
+                <a href="mailto:${email}" class="contact-link">
+                    <span class="contact-icon">✉</span>
+                    <span>${email}</span>
+                </a>
+                <a href="https://www.linkedin.com/in/roni-ux/" target="_blank" class="contact-link icon-only" title="LinkedIn">
+                    <span class="contact-icon">in</span>
+                </a>
+                <a href="https://wa.me/5511914665122" target="_blank" class="contact-link icon-only" title="WhatsApp">
+                    <span class="contact-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                        </svg>
+                    </span>
+                </a>
+            `;
+            }
+
+            // =====================
+            // Load and Render About
+            // =====================
+            function loadAbout() {
+                if (window.DB_CONTENT && window.DB_CONTENT.about) {
+                    renderAbout(window.DB_CONTENT.about);
+                    return;
+                }
+
+                const stored = localStorage.getItem('portfolioAbout');
+                if (stored) {
+                    renderAbout(safeJSONParse(stored, {}));
+                    return;
+                }
+
+                renderAbout({
+                    title: 'Sobre mim',
+                    text: 'Sou Product Designer (UX/UI) com background em Design de Animação e experiência prática construindo soluções digitais do zero — da pesquisa ao protótipo e entrega visual.\n\nMeu foco é criar produtos com clareza, usabilidade e impacto real, equilibrando design, negócio e execução. Tenho facilidade em transformar ideias complexas em interfaces simples, testáveis e apresentáveis.',
+                    location: 'São Paulo — SP',
+                    status: 'Aberto a oportunidades em UX/UI e Product Design'
+                });
+            }
+
+            function renderAbout(about) {
+                document.getElementById('aboutTitle').textContent = about?.title || 'Sobre mim';
+                document.getElementById('aboutText').textContent = about?.text || '';
+                document.getElementById('aboutLocation').textContent = about?.location || '';
+                document.getElementById('aboutStatus').textContent = about?.status || '';
+
+                const imgEl = document.getElementById('aboutProfileImage');
+                if (about?.image) {
+                    imgEl.src = about.image;
+                    imgEl.style.display = 'block';
+                } else {
+                    imgEl.style.display = 'none';
+                }
+            }
+
+            // =====================
+            // Load and Render Cases
+            // =====================
+            const casesGrid = document.getElementById('casesGrid');
+
+            function loadCases() {
+                let cases = [];
+
+                console.log('🔍 Iniciando carregamento de cases...');
+
+                // ✅ 1) Preferir DB publicado do CMS (Assets oficial)
+                if (window.DB_CONTENT && Array.isArray(window.DB_CONTENT.cases)) {
+                    cases = window.DB_CONTENT.cases;
+                    console.log(`📂 DB_CONTENT carregado: ${cases.length} cases encontrados.`);
+                }
+                // ✅ 2) Fallback LocalStorage (Preview / Dev)
+                else {
+                    const stored = localStorage.getItem('portfolioCases');
+                    if (stored) {
+                        cases = safeJSONParse(stored, []);
+                        console.log(`💾 LocalStorage carregado: ${cases.length} cases encontrados.`);
+                    } else {
+                        cases = [];
+                        console.log('⚠️ Nenhum case encontrado no DB ou LocalStorage.');
+                    }
+                }
+
+                // ✅ Debug dados brutos (primeiro case)
+                if (cases.length > 0) {
+                    console.log('📋 Exemplo de dados do case [0]:', cases[0]);
+                }
+
+                // ✅ Filtrar invisíveis (Regra Robusta)
+                const visibleCases = cases.filter(c => {
+                    // O case é visível se:
+                    // 1. visible NÃO for false (undefined ou true = ok)
+                    // 2. hidden NÃO for true (undefined ou false = ok)
+                    // 3. status NÃO for 'oculto'
+                    const isVisible = c.visible !== false && c.hidden !== true && c.status !== 'oculto';
+                    return isVisible;
+                });
+
+                console.log(`👀 Cases visíveis após filtro: ${visibleCases.length}`);
+                console.log('🚀 Renderizando...');
+
+                renderCases(visibleCases);
+
+                console.log(`✅ Renderizados: ${visibleCases.length}`);
+            }
+
+            function renderCases(cases) {
+                if (!casesGrid) return;
+
+                // Se não tiver nenhum case, mostra um texto simples (sem quebrar layout)
+                if (!cases.length) {
+                    casesGrid.innerHTML = `
+                    <div style="color: var(--text-secondary); text-align:center; width:100%; padding: 2rem;">
+                        Nenhum case publicado ainda.
+                    </div>
+                `;
+                    return;
+                }
+
+                casesGrid.innerHTML = cases.map((caseItem, i) => {
+                    const id = String(caseItem.id || `case-${i}`).trim();
+                    const title = String(caseItem.title || "Sem título");
+                    const desc = String(caseItem.shortDescription || "");
+                    const cover = String(caseItem.coverImage || "");
+                    const tags = Array.isArray(caseItem.tags) ? caseItem.tags : [];
+                    const status = String(caseItem.status || "");
+
+                    return `
+                    <a href="case.html?id=${encodeURIComponent(id)}" class="case-card" data-id="${id}">
+                        <img src="${cover}" alt="${title}" class="case-image" loading="lazy">
+                        <div class="case-content">
+                            <h3 class="case-title">${title}</h3>
+                            <p class="case-description">${desc}</p>
+                            <div class="case-tags">
+                                ${status === 'andamento' ? '<span class="status-badge">Em andamento</span>' : ''}
+                                ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </a>
+                `;
+                }).join("");
+            }
+
+            // =====================
+            // Init
+            // =====================
+            loadContact();
+            loadAbout();
+            loadCases();
+        </script>
+</body>
+
+</html>

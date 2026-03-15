@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS - Roni Amorim</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            background: #151515;
+            border: 1px solid #2a2a2a;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: #8b7fff;
+            border: none;
+            color: #0a0a0a;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-right: 1rem;
+        }
+
+        .btn:hover {
+            background: #a99fff;
+        }
+
+        .btn-secondary {
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        .cases-list {
+            margin-top: 3rem;
+        }
+
+        .case-item {
+            background: #151515;
+            border: 1px solid #2a2a2a;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag-item {
+            background: #8b7fff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .gallery-items {
+            margin-top: 1rem;
+        }
+
+        .gallery-item {
+            background: #151515;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #2a2a2a;
+        }
+
+        .logout-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: #ff4444;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.85rem;
+            z-index: 1000;
+        }
+
+        .logout-btn:hover {
+            background: #ff6666;
+        }
+
+        .image-preview {
+            margin-top: 10px;
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border: 1px solid #2a2a2a;
+            display: none;
+        }
+
+        .upload-loading {
+            color: #8b7fff;
+            display: none;
+            margin-left: 10px;
+            font-size: 0.9rem;
+        }
+
+        .cms-section {
+            background: #151515;
+            border: 1px solid #2a2a2a;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 2rem;
+        }
+
+        .image-preview-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #2a2a2a;
+            display: none;
+            margin-top: 10px;
+        }
+
+        .upload-container {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+        }
+
+        .upload-label {
+            font-size: 0.8rem;
+            color: #888;
+            display: block;
+        }
+
+        .min-h-150 {
+            min-height: 150px;
+        }
+
+        .col-full {
+            grid-column: 1 / -1;
+        }
+
+        .section-title {
+            margin: 2rem 0 1rem;
+        }
+
+        .mb-05 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mt-2 {
+            margin-top: 2rem;
+        }
+
+        .publish-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border-radius: 8px;
+        }
+
+        .btn-publish {
+            width: 100%;
+            padding: 1.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #8b7fff, #6655ff);
+        }
+
+        .flex-gap {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="logout-btn" onclick="logoutCMS()">Sair do CMS</button>
+
+    <div class="container">
+        <h1>CMS - Gerenciar Cases</h1>
+
+        <!-- Site Settings Section -->
+        <div class="cms-section">
+            <h2 class="mb-2">Configurações do Site</h2>
+
+            <div class="form-group">
+                <label>Email de Contato</label>
+                <input type="email" id="contactEmail" placeholder="Ex: roni@exemplo.com">
+            </div>
+
+            <div class="form-group">
+                <label>LinkedIn URL</label>
+                <input type="url" id="contactLinkedinUrl" placeholder="Ex: https://linkedin.com/in/roni-ux">
+            </div>
+
+            <div class="form-group">
+                <label>Texto do Botão LinkedIn</label>
+                <input type="text" id="contactLinkedinLabel" placeholder="Ex: LinkedIn">
+            </div>
+
+            <div class="form-group">
+                <label>WhatsApp URL</label>
+                <input type="url" id="contactWhatsappUrl" placeholder="Ex: https://wa.me/5511914665122">
+            </div>
+
+            <div class="form-group">
+                <label>Texto do Botão WhatsApp</label>
+                <input type="text" id="contactWhatsappLabel" placeholder="Ex: WhatsApp">
+            </div>
+
+            <button type="button" class="btn" onclick="saveContact()">Salvar Contatos</button>
+        </div>
+
+        <!-- About/Bio Section -->
+        <div class="cms-section">
+            <h2 class="mb-2">Sobre mim (Bio da Home)</h2>
+
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" id="aboutTitle" placeholder="Ex: Sobre mim">
+            </div>
+
+            <div class="form-group">
+                <label>Texto Principal</label>
+                <textarea id="aboutText" class="min-h-150" placeholder="Sua bio completa..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Localização</label>
+                <input type="text" id="aboutLocation" placeholder="Ex: São Paulo — SP">
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <input type="text" id="aboutStatus" placeholder="Ex: Aberto a oportunidades em UX/UI">
+            </div>
+
+            <div class="form-group">
+                <label>Foto de Perfil (Opcional)</label>
+                <div class="upload-container">
+                    <label class="upload-label">Upload Imagem</label>
+                    <input type="file" accept="image/*"
+                        onchange="handleImageUpload(this, 'aboutImage', 'aboutImagePreview')">
+                </div>
+                <input type="hidden" id="aboutImage">
+                <img id="aboutImagePreview" class="image-preview-circle">
+            </div>
+
+            <button type="button" class="btn" onclick="saveAbout()">Salvar Bio</button>
+        </div>
+
+        <form id="caseForm">
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" id="title" required>
+            </div>
+
+            <div class="form-group">
+                <label>ID (slug)</label>
+                <input type="text" id="caseId" required>
+            </div>
+
+            <div class="form-group">
+                <label>Descrição Curta (Card na Home)</label>
+                <textarea id="shortDescription" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Subtítulo (Página do Case)</label>
+                <input type="text" id="subtitle">
+            </div>
+
+            <div class="form-group">
+                <label>Link do Projeto (Figma / Site / Protótipo / Vídeo)</label>
+                <input type="url" id="projectLink" placeholder="https://...">
+            </div>
+
+            <div class="form-group">
+                <label>Imagem de Capa</label>
+                <div style="margin-bottom: 10px; padding: 10px; background: #1a1a1a; border: 1px solid #333;">
+                    <label style="font-size: 0.8rem; color: #888;">Opção 1: Upload (Local)</label>
+                    <input type="file" accept="image/*"
+                        onchange="handleImageUpload(this, 'coverImage', 'coverPreview')">
+                </div>
+
+                <input type="text" id="coverImage" placeholder="Opção 2: Colar URL externa" required
+                    onchange="document.getElementById('coverPreview').src = this.value; document.getElementById('coverPreview').style.display = 'block';">
+                <img id="coverPreview" class="image-preview">
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select id="status">
+                    <option value="concluido">Concluído</option>
+                    <option value="andamento">Em andamento</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Tags (digite e pressione Enter)</label>
+                <div class="tags-input" id="tagsDisplay"></div>
+                <input type="text" id="tagInput" placeholder="Digite uma tag">
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem;">Ficha Técnica (Case)</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label>Meu Papel (Role)</label>
+                    <input type="text" id="role" placeholder="Ex: Product Design + UI/UX">
+                </div>
+                <div class="form-group">
+                    <label>Stack / Tecnologias</label>
+                    <input type="text" id="techStack" placeholder="Ex: Figma, React, CSS">
+                </div>
+                <div class="form-group">
+                    <label>Plataforma</label>
+                    <input type="text" id="platform" placeholder="Ex: Web, Mobile, App">
+                </div>
+                <div class="form-group">
+                    <label>Deploy</label>
+                    <input type="text" id="deploy" placeholder="Ex: Vercel, Netlify">
+                </div>
+                <div class="form-group">
+                    <label>Ano</label>
+                    <input type="text" id="year" placeholder="Ex: 2026">
+                </div>
+                <div class="form-group">
+                    <label>Duração</label>
+                    <input type="text" id="duration" placeholder="Ex: 2 semanas">
+                </div>
+                <div class="form-group col-full">
+                    <label>Ferramentas / Workflow</label>
+                    <input type="text" id="tools" placeholder="Ex: Figma Make → Antigravity → ajustes manuais no front">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Repo URL (GitHub)</label>
+                <input type="url" id="repoUrl" placeholder="https://github.com/..."
+                    aria-label="URL do Repositório GitHub">
+            </div>
+
+            <h3 class="section-title">Seções do Case</h3>
+
+            <div class="form-group">
+                <label>01. Contexto</label>
+                <input type="text" id="contextSubtitle" placeholder="Subtítulo H3 (Ex: O Cenário)" class="mb-05">
+                <textarea id="context"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>02. Problema</label>
+                <input type="text" id="problemSubtitle" placeholder="Subtítulo H3 (Ex: O Desafio)" class="mb-05">
+                <textarea id="problem"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>03. Objetivo</label>
+                <input type="text" id="objectiveSubtitle" placeholder="Subtítulo H3 (Ex: O que eu queria alcançar)"
+                    class="mb-05">
+                <textarea id="objective"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>04. Processo</label>
+                <input type="text" id="processSubtitle" placeholder="Subtítulo H3 (Ex: Como eu construí)" class="mb-05">
+                <textarea id="process"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>05. Solução</label>
+                <input type="text" id="solutionSubtitle" placeholder="Subtítulo H3 (Ex: O que eu entreguei)"
+                    class="mb-05">
+                <textarea id="solution"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>06. Resultado</label>
+                <input type="text" id="resultSubtitle" placeholder="Subtítulo H3 (Ex: O impacto gerado)" class="mb-05">
+                <textarea id="result"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>07. Próximos Passos</label>
+                <input type="text" id="nextStepsSubtitle" placeholder="Subtítulo H3 (Ex: Evolução planejada)"
+                    class="mb-05">
+                <textarea id="nextSteps"></textarea>
+            </div>
+
+            <h3 class="section-title">Galeria</h3>
+            <div id="galleryItems" class="gallery-items"></div>
+            <button type="button" class="btn btn-secondary" onclick="addGalleryItem()">+ Adicionar Imagem</button>
+
+            <div class="mt-2">
+                <button type="submit" class="btn" id="submitBtn">Adicionar Case</button>
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">Cancelar</button>
+            </div>
+        </form>
+
+        <div class="cases-list">
+            <div class="publish-box">
+                <h2 style="margin-bottom: 1.5rem; color: #8b7fff;">🚀 Publicação</h2>
+                <p style="color: #ccc; margin-bottom: 1.5rem; line-height: 1.5;">
+                    Ao clicar em "Salvar e Publicar Site Oficial", todo o conteúdo atual (Cases, Bio, Contatos) será
+                    salvo em um arquivo oficial do projeto (<code>assets/js/db.js</code>).<br>
+                    Isso permitirá que as alterações sejam detectadas pelo Git para deploy na Vercel.
+                </p>
+                <button class="btn btn-publish" onclick="publishSite()">
+                    ✅ SALVAR E PUBLICAR SITE OFICIAL
+                </button>
+
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: #aaa;">Backup Completo (JSON)</h3>
+                <div class="flex-gap">
+                    <button class="btn btn-secondary" onclick="exportFullBackup()">📥 Exportar Tudo</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('importFullFile').click()">📤
+                        Importar Tudo</button>
+                    <input type="file" id="importFullFile" accept=".json" style="display: none;"
+                        onchange="importFullBackup(event)">
+                </div>
+            </div>
+
+            <h2>Cases Cadastrados</h2>
+            <div id="casesList"></div>
+        </div>
+    </div>
+
+    <script>
+        // =====================
+        // Sistema de Autenticação
+        // =====================
+        function checkAuth() {
+            const isAuthenticated = localStorage.getItem('cmsAuth');
+
+            if (isAuthenticated !== 'true') {
+                const password = prompt('Digite a senha para acessar o CMS:');
+
+                if (password === 'Roni@9347') {
+                    localStorage.setItem('cmsAuth', 'true');
+                } else {
+                    alert('Senha incorreta!');
+                    window.location.href = 'index.html';
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function logoutCMS() {
+            if (confirm('Tem certeza que deseja sair do CMS?')) {
+                localStorage.removeItem('cmsAuth');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Verificar autenticação ao carregar a página
+        if (!checkAuth()) {
+            throw new Error('Não autenticado');
+        }
+
+        // =====================
+        // Variáveis Globais
+        // =====================
+        let currentTags = [];
+        let currentGallery = [];
+        let editingIndex = null;
+
+        // Tags
+        document.getElementById('tagInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tag = e.target.value.trim();
+                if (tag && !currentTags.includes(tag)) {
+                    currentTags.push(tag);
+                    renderTags();
+                    e.target.value = '';
+                }
+            }
+        });
+
+        function renderTags() {
+            const display = document.getElementById('tagsDisplay');
+            display.innerHTML = currentTags.map(tag => `
+                <span class="tag-item">${tag} <span class="tag-remove" onclick="removeTag('${tag}')">×</span></span>
+            `).join('');
+        }
+
+        window.removeTag = function (tag) {
+            currentTags = currentTags.filter(t => t !== tag);
+            renderTags();
+        };
+
+        // =====================
+        // Image Upload System
+        // =====================
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const caseId = document.getElementById('caseId').value || 'temp';
+
+            try {
+                const response = await fetch('http://localhost:3000/upload', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'case-id': caseId
+                    }
+                });
+
+                if (!response.ok) throw new Error('Falha no upload');
+
+                const data = await response.json();
+                return data.filePath; // Caminho relativo (uploads/cases/...)
+            } catch (error) {
+                console.error('Erro no upload:', error);
+                alert('Erro ao fazer upload da imagem. Verifique se o servidor está rodando (node server.js).');
+                return null;
+            }
+        }
+
+        async function handleImageUpload(input, hiddenInputId, previewId) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // ✅ PROFILE IMAGE: Save as Base64 (to work on Vercel without external hosting)
+            if (hiddenInputId === 'aboutImage') {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64 = e.target.result;
+                    document.getElementById(hiddenInputId).value = base64;
+                    const preview = document.getElementById(previewId);
+                    preview.src = base64;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+                return; // Stop here, don't upload to server
+            }
+
+            const loading = input.parentElement.querySelector('.upload-loading');
+            if (loading) loading.style.display = 'block';
+
+            const filePath = await uploadFile(file);
+
+            if (loading) loading.style.display = 'none';
+
+            if (filePath) {
+                document.getElementById(hiddenInputId).value = filePath;
+                const preview = document.getElementById(previewId);
+                preview.src = filePath;
+                preview.style.display = 'block';
+            } else {
+                input.value = ''; // Limpar input se falhar
+            }
+        }
+
+        async function handleGalleryUpload(input, index) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const loading = input.parentElement.querySelector('.upload-loading');
+            if (loading) loading.style.display = 'inline';
+
+            const filePath = await uploadFile(file);
+
+            if (loading) loading.style.display = 'none';
+
+            if (filePath) {
+                currentGallery[index].url = filePath;
+                renderGallery(); // Re-render para mostrar o preview
+            }
+        }
+
+        // =====================
+        // Image Handling (Base64 + Compression)
+        // =====================
+        function compressImage(base64, maxWidth = 1000) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = base64;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxWidth) {
+                        height *= maxWidth / width;
+                        width = maxWidth;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.8)); // 80% qualidade
+                };
+            });
+        }
+
+        function handleImageUpload(input, targetInputId, previewId) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                const rawBase64 = e.target.result;
+                const compressedBase64 = await compressImage(rawBase64);
+
+                if (targetInputId) document.getElementById(targetInputId).value = compressedBase64;
+                if (previewId) {
+                    const preview = document.getElementById(previewId);
+                    preview.src = compressedBase64;
+                    preview.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleGalleryUpload(input, index) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                const rawBase64 = e.target.result;
+                const compressedBase64 = await compressImage(rawBase64);
+
+                currentGallery[index].url = compressedBase64;
+                renderGallery();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Gallery
+        function addGalleryItem() {
+            const index = currentGallery.length;
+            currentGallery.push({ url: '', caption: '' });
+            renderGallery();
+        }
+
+        function removeGalleryItem(index) {
+            currentGallery.splice(index, 1);
+            renderGallery();
+        }
+
+        function updateGalleryItem(index, field, value) {
+            currentGallery[index][field] = value;
+        }
+
+        function renderGallery() {
+            const container = document.getElementById('galleryItems');
+            container.innerHTML = currentGallery.map((item, i) => `
+                <div class="gallery-item">
+                    <div style="margin-bottom: 0.5rem;">
+                         <label style="display:block; margin-bottom:5px; font-size: 0.85rem; color: #888;">Imagem Base64/URL</label>
+                         
+                         <div style="margin-bottom: 10px; padding: 10px; background: #1a1a1a; border: 1px solid #333;">
+                            <label style="font-size: 0.8rem; color: #888;">Upload Local</label>
+                            <input type="file" accept="image/*" onchange="handleGalleryUpload(this, ${i})">
+                         </div>
+
+                         <input type="text" placeholder="Cole URL externa ou veja o código Base64" value="${item.url ? (item.url.startsWith('data:') ? '(Imagem carregada)' : item.url) : ''}"
+                                onchange="if(!this.value.startsWith('(Imagem')) { updateGalleryItem(${i}, 'url', this.value); this.parentElement.nextElementSibling.src = this.value; this.parentElement.nextElementSibling.style.display = 'block'; }"
+                                style="font-size: 0.8rem; color: #666; margin-top:5px;">
+                    </div>
+                    
+                    <img src="${item.url}" class="image-preview" style="display: ${item.url ? 'block' : 'none'}; height: 150px; margin-bottom: 10px; object-fit: cover;">
+                    
+                    <input type="text" placeholder="Legenda (opcional)" value="${item.caption}"
+                           onchange="updateGalleryItem(${i}, 'caption', this.value)">
+                    <button type="button" class="btn btn-secondary" onclick="removeGalleryItem(${i})" style="margin-top: 0.5rem; border: 1px solid #ff4444; color: #ff4444;">Remover</button>
+                </div>
+            `).join('');
+        }
+
+        // Auto-generate slug
+        document.getElementById('title').addEventListener('input', (e) => {
+            if (editingIndex === null) {
+                const slug = e.target.value.toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                document.getElementById('caseId').value = slug;
+            }
+        });
+
+        // Form submit
+        document.getElementById('caseForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const caseData = {
+                id: document.getElementById('caseId').value,
+                title: document.getElementById('title').value,
+                shortDescription: document.getElementById('shortDescription').value,
+                subtitle: document.getElementById('subtitle').value,
+                projectLink: document.getElementById('projectLink').value,
+                coverImage: document.getElementById('coverImage').value,
+                status: document.getElementById('status').value,
+                // Ficha Técnica
+                role: document.getElementById('role').value,
+                techStack: document.getElementById('techStack').value,
+                platform: document.getElementById('platform').value,
+                deploy: document.getElementById('deploy').value,
+                year: document.getElementById('year').value,
+                duration: document.getElementById('duration').value,
+                tools: document.getElementById('tools').value,
+                repoUrl: document.getElementById('repoUrl').value,
+                // --
+                tags: currentTags,
+                sections: {
+                    context: {
+                        content: document.getElementById('context').value,
+                        subtitle: document.getElementById('contextSubtitle').value
+                    },
+                    problem: {
+                        content: document.getElementById('problem').value,
+                        subtitle: document.getElementById('problemSubtitle').value
+                    },
+                    objective: {
+                        content: document.getElementById('objective').value,
+                        subtitle: document.getElementById('objectiveSubtitle').value
+                    },
+                    process: {
+                        content: document.getElementById('process').value,
+                        subtitle: document.getElementById('processSubtitle').value
+                    },
+                    solution: {
+                        content: document.getElementById('solution').value,
+                        subtitle: document.getElementById('solutionSubtitle').value
+                    },
+                    result: {
+                        content: document.getElementById('result').value,
+                        subtitle: document.getElementById('resultSubtitle').value
+                    },
+                    nextSteps: {
+                        content: document.getElementById('nextSteps').value,
+                        subtitle: document.getElementById('nextStepsSubtitle').value
+                    }
+                },
+                gallery: currentGallery.filter(item => item.url)
+            };
+
+            const stored = localStorage.getItem('portfolioCases');
+            let cases = stored ? JSON.parse(stored) : [];
+
+            if (editingIndex !== null) {
+                cases[editingIndex] = caseData;
+                editingIndex = null;
+                document.getElementById('submitBtn').textContent = 'Adicionar Case';
+            } else {
+                cases.push(caseData);
+            }
+
+            localStorage.setItem('portfolioCases', JSON.stringify(cases));
+            renderCasesList();
+            resetForm();
+            alert('Case salvo com sucesso!');
+        });
+
+        function resetForm() {
+            document.getElementById('caseForm').reset();
+            currentTags = [];
+            currentGallery = [];
+            editingIndex = null;
+
+            // Limpar previews
+            document.getElementById('coverPreview').src = '';
+            document.getElementById('coverPreview').style.display = 'none';
+
+            renderTags();
+            renderGallery();
+            document.getElementById('submitBtn').textContent = 'Adicionar Case';
+        }
+
+        window.editCase = function (index) {
+            const stored = localStorage.getItem('portfolioCases');
+            if (!stored) return;
+
+            const cases = JSON.parse(stored);
+            const c = cases[index];
+
+            document.getElementById('caseId').value = c.id;
+            document.getElementById('title').value = c.title;
+            document.getElementById('shortDescription').value = c.shortDescription || '';
+            document.getElementById('subtitle').value = c.subtitle || '';
+            document.getElementById('projectLink').value = c.projectLink || '';
+
+            // Ficha Técnica
+            document.getElementById('role').value = c.role || '';
+            document.getElementById('techStack').value = c.techStack || '';
+            document.getElementById('platform').value = c.platform || '';
+            document.getElementById('deploy').value = c.deploy || '';
+            document.getElementById('year').value = c.year || '';
+            document.getElementById('duration').value = c.duration || '';
+            document.getElementById('tools').value = c.tools || '';
+            document.getElementById('repoUrl').value = c.repoUrl || '';
+
+            document.getElementById('coverImage').value = c.coverImage || '';
+            // Preview da capa
+            if (c.coverImage) {
+                document.getElementById('coverPreview').src = c.coverImage;
+                document.getElementById('coverPreview').style.display = 'block';
+            }
+
+            document.getElementById('status').value = c.status || 'concluido';
+
+            currentTags = c.tags || [];
+            renderTags();
+
+            if (c.sections) {
+                const fields = ['context', 'problem', 'objective', 'process', 'solution', 'result', 'nextSteps'];
+                fields.forEach(field => {
+                    const sectionData = c.sections[field];
+
+                    document.getElementById(field).value = '';
+                    document.getElementById(field + 'Subtitle').value = '';
+
+                    if (typeof sectionData === 'object' && sectionData !== null) {
+                        document.getElementById(field).value = sectionData.content || '';
+                        document.getElementById(field + 'Subtitle').value = sectionData.subtitle || '';
+                    } else if (typeof sectionData === 'string') {
+                        document.getElementById(field).value = sectionData || '';
+                    }
+                });
+            }
+
+            currentGallery = c.gallery || [];
+            renderGallery();
+
+            editingIndex = index;
+            document.getElementById('submitBtn').textContent = 'Salvar Alterações';
+            window.scrollTo(0, 0);
+        };
+
+        window.deleteCase = function (index) {
+            if (confirm('Tem certeza que deseja excluir este case?')) {
+                const stored = localStorage.getItem('portfolioCases');
+                const cases = JSON.parse(stored);
+                cases.splice(index, 1);
+                localStorage.setItem('portfolioCases', JSON.stringify(cases));
+                renderCasesList();
+            }
+        };
+
+        window.moveCase = function (index, direction) {
+            const stored = localStorage.getItem('portfolioCases');
+            if (!stored) return;
+            const cases = JSON.parse(stored);
+
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= cases.length) return;
+
+            // Swap
+            const temp = cases[index];
+            cases[index] = cases[newIndex];
+            cases[newIndex] = temp;
+
+            localStorage.setItem('portfolioCases', JSON.stringify(cases));
+            renderCasesList();
+        };
+
+        window.toggleVisibility = function (index) {
+            const stored = localStorage.getItem('portfolioCases');
+            if (!stored) return;
+            const cases = JSON.parse(stored);
+
+            // Toggle logic: undefined/true -> false, false -> true
+            const isVisible = cases[index].visible !== false;
+            cases[index].visible = !isVisible;
+
+            localStorage.setItem('portfolioCases', JSON.stringify(cases));
+            renderCasesList();
+        };
+
+        function renderCasesList() {
+            const stored = localStorage.getItem('portfolioCases');
+            let cases = [];
+            try {
+                cases = stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                console.error('JSON Error:', e);
+                cases = [];
+            }
+            const list = document.getElementById('casesList');
+
+            if (cases.length === 0) {
+                list.innerHTML = '<p style="color: #666; font-style: italic;">Nenhum case cadastrado.</p>';
+                return;
+            }
+
+            list.innerHTML = cases.map((c, i) => {
+                const isVisible = c.visible !== false;
+                const opacity = isVisible ? '1' : '0.5';
+                const visibilityIcon = isVisible ? '👁️' : '🚫';
+                const visibilityTitle = isVisible ? 'Ocultar da Home' : 'Mostrar na Home';
+                const visibilityColor = isVisible ? '#8b7fff' : '#666';
+
+                return `
+                <div class="case-item" style="opacity: ${opacity}; transition: all 0.3s; border-left: 4px solid ${isVisible ? '#8b7fff' : '#2a2a2a'};">
+                    <div style="display: flex; align-items: center; gap: 1rem; flex-grow: 1;">
+                         <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <button type="button" onclick="moveCase(${i}, -1)" ${i === 0 ? 'disabled' : ''} 
+                                style="cursor: pointer; padding: 2px 8px; font-size: 0.8rem; background: #2a2a2a; color: #fff; border: none; border-radius: 4px; ${i === 0 ? 'opacity: 0.3; cursor: default;' : 'hover:background: #444;'}">▲</button>
+                            <button type="button" onclick="moveCase(${i}, 1)" ${i === cases.length - 1 ? 'disabled' : ''} 
+                                style="cursor: pointer; padding: 2px 8px; font-size: 0.8rem; background: #2a2a2a; color: #fff; border: none; border-radius: 4px; ${i === cases.length - 1 ? 'opacity: 0.3; cursor: default;' : 'hover:background: #444;'}">▼</button>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column;">
+                            <div>
+                                <strong style="font-size: 1.1rem;">${c.title}</strong> 
+                                <span style="font-size: 0.85rem; color: #666; margin-left: 0.5rem;">(${c.id})</span>
+                                ${!isVisible ? '<span style="color: #ff4444; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-left: 0.5rem; border: 1px solid #ff4444; padding: 1px 4px; border-radius: 4px;">Oculto</span>' : ''}
+                            </div>
+                            <div style="font-size: 0.85rem; color: #888; margin-top: 4px;">
+                                ${c.shortDescription ? c.shortDescription.substring(0, 60) + (c.shortDescription.length > 60 ? '...' : '') : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                         <button class="btn btn-secondary" onclick="toggleVisibility(${i})" title="${visibilityTitle}" style="padding: 0.5rem 1rem; font-size: 1.2rem; min-width: 50px;">
+                            ${visibilityIcon}
+                        </button>
+                        <button class="btn btn-secondary" onclick="editCase(${i})">Editar</button>
+                        <button class="btn btn-secondary" onclick="deleteCase(${i})" style="border: 1px solid #ff4444; color: #ff4444;">Excluir</button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // =====================
+        // Funções de Backup
+        // =====================
+        function exportJSON() {
+            const stored = localStorage.getItem('portfolioCases');
+            const cases = stored ? JSON.parse(stored) : [];
+
+            const dataStr = JSON.stringify(cases, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'portfolioCases-backup.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert('Backup exportado com sucesso!');
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+
+                    // Validar se é um array
+                    if (!Array.isArray(importedData)) {
+                        alert('JSON inválido');
+                        return;
+                    }
+
+                    // Validar estrutura básica de cada case
+                    const isValid = importedData.every(c =>
+                        c.id && c.title && c.shortDescription && c.coverImage
+                    );
+
+                    if (!isValid) {
+                        alert('JSON inválido');
+                        return;
+                    }
+
+                    // Salvar e atualizar
+                    localStorage.setItem('portfolioCases', JSON.stringify(importedData));
+                    renderCasesList();
+                    alert('Cases importados com sucesso!');
+
+                } catch (error) {
+                    alert('JSON inválido');
+                }
+            };
+
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input
+        }
+
+        function copyToClipboard() {
+            const stored = localStorage.getItem('portfolioCases');
+            const cases = stored ? JSON.parse(stored) : [];
+            const dataStr = JSON.stringify(cases, null, 2);
+
+            navigator.clipboard.writeText(dataStr).then(() => {
+                alert('JSON copiado para a área de transferência!');
+            }).catch(() => {
+                // Fallback para navegadores antigos
+                const textarea = document.createElement('textarea');
+                textarea.value = dataStr;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('JSON copiado para a área de transferência!');
+            });
+        }
+
+        // =====================
+        // Contact Functions
+        // =====================
+        function loadContactData() {
+            const stored = localStorage.getItem('portfolioContact');
+            if (stored) {
+                const contact = JSON.parse(stored);
+                document.getElementById('contactEmail').value = contact.email || '';
+                document.getElementById('contactLinkedinUrl').value = contact.linkedinUrl || '';
+                document.getElementById('contactLinkedinLabel').value = contact.linkedinLabel || '';
+                document.getElementById('contactWhatsappUrl').value = contact.whatsappUrl || '';
+                document.getElementById('contactWhatsappLabel').value = contact.whatsappLabel || '';
+            }
+        }
+
+        function saveContact() {
+            const contactData = {
+                email: document.getElementById('contactEmail').value,
+                linkedinUrl: document.getElementById('contactLinkedinUrl').value,
+                linkedinLabel: document.getElementById('contactLinkedinLabel').value,
+                whatsappUrl: document.getElementById('contactWhatsappUrl').value,
+                whatsappLabel: document.getElementById('contactWhatsappLabel').value
+            };
+
+            localStorage.setItem('portfolioContact', JSON.stringify(contactData));
+            alert('Contatos salvos com sucesso!');
+        }
+
+        // =====================
+        // About/Bio Functions
+        // =====================
+        function loadAboutData() {
+            const stored = localStorage.getItem('portfolioAbout');
+            if (stored) {
+                const about = JSON.parse(stored);
+                document.getElementById('aboutTitle').value = about.title || '';
+                document.getElementById('aboutText').value = about.text || '';
+                document.getElementById('aboutLocation').value = about.location || '';
+                document.getElementById('aboutStatus').value = about.status || '';
+            }
+        }
+
+        function saveAbout() {
+            const aboutData = {
+                title: document.getElementById('aboutTitle').value,
+                text: document.getElementById('aboutText').value,
+                location: document.getElementById('aboutLocation').value,
+                status: document.getElementById('aboutStatus').value,
+                image: document.getElementById('aboutImage').value || ''
+            };
+
+            localStorage.setItem('portfolioAbout', JSON.stringify(aboutData));
+            alert('Bio salva com sucesso!');
+        }
+
+        // Carregar dados iniciais
+        function loadInitialData() {
+            // About
+            const about = JSON.parse(localStorage.getItem('portfolioAbout') || '{}');
+            if (about.title) document.getElementById('aboutTitle').value = about.title;
+            if (about.text) document.getElementById('aboutText').value = about.text;
+            if (about.location) document.getElementById('aboutLocation').value = about.location;
+            if (about.status) document.getElementById('aboutStatus').value = about.status;
+            if (about.image) {
+                document.getElementById('aboutImage').value = about.image;
+                const preview = document.getElementById('aboutImagePreview');
+                preview.src = about.image;
+                preview.style.display = 'block';
+            }
+
+            // Contact
+            const contact = JSON.parse(localStorage.getItem('portfolioContact') || '{}');
+            if (contact.email) document.getElementById('contactEmail').value = contact.email;
+            if (contact.linkedinUrl) document.getElementById('contactLinkedinUrl').value = contact.linkedinUrl;
+            if (contact.linkedinLabel) document.getElementById('contactLinkedinLabel').value = contact.linkedinLabel;
+            if (contact.whatsappUrl) document.getElementById('contactWhatsappUrl').value = contact.whatsappUrl;
+            if (contact.whatsappLabel) document.getElementById('contactWhatsappLabel').value = contact.whatsappLabel;
+        }
+
+        loadInitialData();
+        renderCasesList();
+
+        // =====================
+        // Publicação & Full Backup
+        // =====================
+        function getAllData() {
+            return {
+                cases: JSON.parse(localStorage.getItem('portfolioCases') || '[]'),
+                about: JSON.parse(localStorage.getItem('portfolioAbout') || '{}'),
+                contact: JSON.parse(localStorage.getItem('portfolioContact') || '{}')
+            };
+        }
+
+        async function publishSite() {
+            if (!confirm('Deseja realmente sobrescrever o arquivo oficial do site com os dados atuais do CMS?')) return;
+
+            const data = getAllData();
+            const btn = document.querySelector('button[onclick="publishSite()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Salvando...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('http://localhost:3000/save-db', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ Sucesso! O arquivo assets/js/db.js foi atualizado.\n\nAgora você pode rodar:\ngit add . && git commit -m "update cms" && git push');
+                } else {
+                    alert('❌ Erro: ' + (result.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error(error);
+                alert('❌ Erro de conexão com o servidor local (localhost:3000). Certifique-se que "node server.js" está rodando.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function exportFullBackup() {
+            const data = getAllData();
+            const dataStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `portfolio-backup-FULL-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function importFullBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.cases) localStorage.setItem('portfolioCases', JSON.stringify(data.cases));
+                    if (data.about) localStorage.setItem('portfolioAbout', JSON.stringify(data.about));
+                    if (data.contact) localStorage.setItem('portfolioContact', JSON.stringify(data.contact));
+
+                    alert('✅ Backup importado com sucesso! A página será recarregada.');
+                    window.location.reload();
+                } catch (err) {
+                    alert('❌ Erro ao ler JSON: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+    </script>
+</body>
+
+</html>
