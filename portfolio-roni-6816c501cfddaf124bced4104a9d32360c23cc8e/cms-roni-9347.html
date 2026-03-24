@@ -5,15 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CMS - Roni Amorim</title>
-    <script>
-        window.onload = function() {
-            const senha = prompt("Digite a senha:");
-            if (senha !== "roni123") {
-                alert("Acesso negado!");
-                window.location.href = "index.html";
-            }
-        };
-    </script>
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -250,6 +244,26 @@
 </head>
 
 <body>
+
+    <!-- ======================== LOGIN OVERLAY ======================== -->
+    <div id="loginOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0a;z-index:9999;display:flex;align-items:center;justify-content:center;">
+        <div style="background:#151515;border:1px solid #2a2a2a;padding:3rem;width:100%;max-width:420px;border-radius:8px;">
+            <h2 style="margin-bottom:0.25rem;font-size:1.6rem;letter-spacing:-0.02em;">CMS</h2>
+            <p style="color:#666;margin-bottom:2rem;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;">Roni Amorim Portfolio</p>
+            <div id="loginError" style="color:#ff4444;background:rgba(255,68,68,0.1);border:1px solid rgba(255,68,68,0.3);padding:0.75rem;border-radius:4px;margin-bottom:1rem;font-size:0.9rem;display:none;"></div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+            </div>
+            <button class="btn" id="loginBtn" onclick="handleLogin()" style="width:100%;margin-top:0.5rem;">Entrar</button>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+
     <button class="logout-btn" onclick="logoutCMS()">Sair do CMS</button>
 
     <div class="container">
@@ -474,14 +488,15 @@
 
         <div class="cases-list">
             <div class="publish-box">
-                <h2 style="margin-bottom: 1.5rem; color: #8b7fff;">🚀 Publicação</h2>
-                <p style="color: #ccc; margin-bottom: 1.5rem; line-height: 1.5;">
-                    Ao clicar em "Salvar e Publicar Site Oficial", todo o conteúdo atual (Cases, Bio, Contatos) será
-                    salvo em um arquivo oficial do projeto (<code>assets/js/db.js</code>).<br>
-                    Isso permitirá que as alterações sejam detectadas pelo Git para deploy na Vercel.
-                </p>
-                <button class="btn btn-publish" onclick="publishSite()">
-                    ✅ SALVAR E PUBLICAR SITE OFICIAL
+                <h2 style="margin-bottom: 1rem; color: #8b7fff;">🚀 Status da Publicação</h2>
+                <div style="background: rgba(139,127,255,0.08); border: 1px solid rgba(139,127,255,0.3); border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem;">
+                    <p style="color: #a99fff; font-size: 0.9rem; line-height: 1.6; margin: 0;">
+                        ✅ <strong>Publicação automática ativa.</strong><br>
+                        Cada alteração salva (cases, bio, contatos) vai direto para o banco de dados Supabase e fica visível no site ao vivo <strong>instantaneamente</strong>. Não é necessário nenhum deploy manual.
+                    </p>
+                </div>
+                <button class="btn btn-publish" onclick="publishSite()" style="background: rgba(139,127,255,0.2); border: 1px solid #8b7fff; color: #8b7fff;">
+                    ✅ CONFIRMAR STATUS DA PUBLICAÇÃO
                 </button>
 
                 <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: #aaa;">Backup Completo (JSON)</h3>
@@ -501,35 +516,131 @@
 
     <script>
         // =====================
-        // Sistema de Autenticação
+        // Supabase Client
         // =====================
-        function checkAuth() {
-            const isAuthenticated = localStorage.getItem('cmsAuth');
+        const { createClient } = window.supabase;
+        const sbClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            if (isAuthenticated !== 'true') {
-                const password = prompt('Digite a senha para acessar o CMS:');
+        // Estado em memória (carregado do Supabase ao fazer login)
+        let portfolioData = { cases: [], about: {}, contact: {} };
 
-                if (password === 'Roni@9347') {
-                    localStorage.setItem('cmsAuth', 'true');
-                } else {
-                    alert('Senha incorreta!');
-                    window.location.href = 'index.html';
-                    return false;
-                }
+        // =====================
+        // Auth — Login com Supabase
+        // =====================
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtn');
+            const errorEl = document.getElementById('loginError');
+
+            if (!email || !password) {
+                errorEl.textContent = 'Preencha email e senha.';
+                errorEl.style.display = 'block';
+                return;
             }
-            return true;
+
+            btn.textContent = 'Entrando...';
+            btn.disabled = true;
+            errorEl.style.display = 'none';
+
+            try {
+                const { error } = await sbClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+
+                await loadFromSupabase();
+                document.getElementById('loginOverlay').style.display = 'none';
+                renderCasesList();
+                showToast('Login realizado com sucesso!');
+            } catch (err) {
+                errorEl.textContent = err.message || 'Email ou senha incorretos.';
+                errorEl.style.display = 'block';
+                btn.textContent = 'Entrar';
+                btn.disabled = false;
+            }
         }
 
-        function logoutCMS() {
+        // Enter no campo senha faz login
+        document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        async function logoutCMS() {
             if (confirm('Tem certeza que deseja sair do CMS?')) {
-                localStorage.removeItem('cmsAuth');
-                window.location.href = 'index.html';
+                await sbClient.auth.signOut();
+                window.location.reload();
             }
         }
 
-        // Verificar autenticação ao carregar a página
-        if (!checkAuth()) {
-            throw new Error('Não autenticado');
+        // Verificar se já está logado (sessão existente)
+        async function checkExistingSession() {
+            const { data: { session } } = await sbClient.auth.getSession();
+            if (session) {
+                await loadFromSupabase();
+                document.getElementById('loginOverlay').style.display = 'none';
+                renderCasesList();
+            }
+        }
+
+        // =====================
+        // Supabase — Carregar Dados
+        // =====================
+        async function loadFromSupabase() {
+            const { data, error } = await sbClient
+                .from('portfolio_data')
+                .select('key, value');
+
+            if (error) {
+                showToast('Erro ao carregar dados: ' + error.message, 'error');
+                return;
+            }
+
+            data.forEach(row => { portfolioData[row.key] = row.value; });
+
+            // Preencher formulários com os dados carregados
+            const about = portfolioData.about || {};
+            if (about.title)    document.getElementById('aboutTitle').value    = about.title;
+            if (about.text)     document.getElementById('aboutText').value     = about.text;
+            if (about.location) document.getElementById('aboutLocation').value = about.location;
+            if (about.status)   document.getElementById('aboutStatus').value   = about.status;
+            if (about.image) {
+                document.getElementById('aboutImage').value = about.image;
+                const preview = document.getElementById('aboutImagePreview');
+                preview.src = about.image;
+                preview.style.display = 'block';
+            }
+
+            const contact = portfolioData.contact || {};
+            if (contact.email)          document.getElementById('contactEmail').value          = contact.email;
+            if (contact.linkedinUrl)    document.getElementById('contactLinkedinUrl').value    = contact.linkedinUrl;
+            if (contact.linkedinLabel)  document.getElementById('contactLinkedinLabel').value  = contact.linkedinLabel;
+            if (contact.whatsappUrl)    document.getElementById('contactWhatsappUrl').value    = contact.whatsappUrl;
+            if (contact.whatsappLabel)  document.getElementById('contactWhatsappLabel').value  = contact.whatsappLabel;
+        }
+
+        // =====================
+        // Supabase — Salvar Dados
+        // =====================
+        async function saveToDB(key, value) {
+            const { error } = await sbClient
+                .from('portfolio_data')
+                .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+            if (error) throw error;
+            portfolioData[key] = value;
+        }
+
+        // =====================
+        // Toast de Feedback
+        // =====================
+        function showToast(message, type = 'success') {
+            const existing = document.getElementById('cmsToast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.id = 'cmsToast';
+            toast.textContent = message;
+            const bg = type === 'error' ? '#ff4444' : type === 'warning' ? '#ffc107' : '#8b7fff';
+            toast.style.cssText = `position:fixed;bottom:2rem;right:2rem;background:${bg};color:${type === 'warning' ? '#000' : '#fff'};padding:1rem 1.5rem;border-radius:6px;font-family:Inter,sans-serif;font-size:0.9rem;z-index:10000;box-shadow:0 4px 20px rgba(0,0,0,0.4);max-width:320px;`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
         }
 
         // =====================
@@ -759,7 +870,7 @@
         });
 
         // Form submit
-        document.getElementById('caseForm').addEventListener('submit', (e) => {
+        document.getElementById('caseForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const caseData = {
@@ -814,8 +925,7 @@
                 gallery: currentGallery.filter(item => item.url)
             };
 
-            const stored = localStorage.getItem('portfolioCases');
-            let cases = stored ? JSON.parse(stored) : [];
+            const cases = [...(portfolioData.cases || [])];
 
             if (editingIndex !== null) {
                 cases[editingIndex] = caseData;
@@ -825,10 +935,18 @@
                 cases.push(caseData);
             }
 
-            localStorage.setItem('portfolioCases', JSON.stringify(cases));
-            renderCasesList();
-            resetForm();
-            alert('Case salvo com sucesso!');
+            const btn = document.getElementById('submitBtn');
+            btn.textContent = 'Salvando...';
+            btn.disabled = true;
+            try {
+                await saveToDB('cases', cases);
+                renderCasesList();
+                resetForm();
+                showToast('Case salvo! Visível no site agora.');
+            } catch (err) {
+                showToast('Erro ao salvar: ' + err.message, 'error');
+            }
+            btn.disabled = false;
         });
 
         function resetForm() {
@@ -847,10 +965,8 @@
         }
 
         window.editCase = function (index) {
-            const stored = localStorage.getItem('portfolioCases');
-            if (!stored) return;
-
-            const cases = JSON.parse(stored);
+            const cases = portfolioData.cases || [];
+            if (!cases.length) return;
             const c = cases[index];
 
             document.getElementById('caseId').value = c.id;
@@ -906,55 +1022,52 @@
             window.scrollTo(0, 0);
         };
 
-        window.deleteCase = function (index) {
+        window.deleteCase = async function (index) {
             if (confirm('Tem certeza que deseja excluir este case?')) {
-                const stored = localStorage.getItem('portfolioCases');
-                const cases = JSON.parse(stored);
+                const cases = [...portfolioData.cases];
                 cases.splice(index, 1);
-                localStorage.setItem('portfolioCases', JSON.stringify(cases));
-                renderCasesList();
+                try {
+                    await saveToDB('cases', cases);
+                    renderCasesList();
+                    showToast('Case excluído.');
+                } catch (err) {
+                    showToast('Erro ao excluir: ' + err.message, 'error');
+                }
             }
         };
 
-        window.moveCase = function (index, direction) {
-            const stored = localStorage.getItem('portfolioCases');
-            if (!stored) return;
-            const cases = JSON.parse(stored);
-
+        window.moveCase = async function (index, direction) {
+            const cases = [...portfolioData.cases];
             const newIndex = index + direction;
             if (newIndex < 0 || newIndex >= cases.length) return;
 
-            // Swap
             const temp = cases[index];
             cases[index] = cases[newIndex];
             cases[newIndex] = temp;
 
-            localStorage.setItem('portfolioCases', JSON.stringify(cases));
-            renderCasesList();
+            try {
+                await saveToDB('cases', cases);
+                renderCasesList();
+            } catch (err) {
+                showToast('Erro ao reordenar: ' + err.message, 'error');
+            }
         };
 
-        window.toggleVisibility = function (index) {
-            const stored = localStorage.getItem('portfolioCases');
-            if (!stored) return;
-            const cases = JSON.parse(stored);
-
-            // Toggle logic: undefined/true -> false, false -> true
+        window.toggleVisibility = async function (index) {
+            const cases = [...portfolioData.cases];
             const isVisible = cases[index].visible !== false;
             cases[index].visible = !isVisible;
 
-            localStorage.setItem('portfolioCases', JSON.stringify(cases));
-            renderCasesList();
+            try {
+                await saveToDB('cases', cases);
+                renderCasesList();
+            } catch (err) {
+                showToast('Erro: ' + err.message, 'error');
+            }
         };
 
         function renderCasesList() {
-            const stored = localStorage.getItem('portfolioCases');
-            let cases = [];
-            try {
-                cases = stored ? JSON.parse(stored) : [];
-            } catch (e) {
-                console.error('JSON Error:', e);
-                cases = [];
-            }
+            const cases = portfolioData.cases || [];
             const list = document.getElementById('casesList');
 
             if (cases.length === 0) {
@@ -1006,8 +1119,7 @@
         // Funções de Backup
         // =====================
         function exportJSON() {
-            const stored = localStorage.getItem('portfolioCases');
-            const cases = stored ? JSON.parse(stored) : [];
+            const cases = portfolioData.cases || [];
 
             const dataStr = JSON.stringify(cases, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
@@ -1021,7 +1133,7 @@
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
 
-            alert('Backup exportado com sucesso!');
+            showToast('Backup exportado!');
         }
 
         function importJSON(event) {
@@ -1029,38 +1141,35 @@
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function (e) {
+            reader.onload = async function (e) {
                 try {
                     const importedData = JSON.parse(e.target.result);
 
-                    // Validar se é um array
                     if (!Array.isArray(importedData)) {
-                        alert('JSON inválido');
+                        showToast('JSON inválido', 'error');
                         return;
                     }
 
-                    // Validar estrutura básica de cada case
                     const isValid = importedData.every(c =>
                         c.id && c.title && c.shortDescription && c.coverImage
                     );
 
                     if (!isValid) {
-                        alert('JSON inválido');
+                        showToast('JSON inválido', 'error');
                         return;
                     }
 
-                    // Salvar e atualizar
-                    localStorage.setItem('portfolioCases', JSON.stringify(importedData));
+                    await saveToDB('cases', importedData);
                     renderCasesList();
-                    alert('Cases importados com sucesso!');
+                    showToast('Cases importados com sucesso!');
 
                 } catch (error) {
-                    alert('JSON inválido');
+                    showToast('Erro: ' + error.message, 'error');
                 }
             };
 
             reader.readAsText(file);
-            event.target.value = ''; // Reset input
+            event.target.value = '';
         }
 
         function copyToClipboard() {
@@ -1085,19 +1194,7 @@
         // =====================
         // Contact Functions
         // =====================
-        function loadContactData() {
-            const stored = localStorage.getItem('portfolioContact');
-            if (stored) {
-                const contact = JSON.parse(stored);
-                document.getElementById('contactEmail').value = contact.email || '';
-                document.getElementById('contactLinkedinUrl').value = contact.linkedinUrl || '';
-                document.getElementById('contactLinkedinLabel').value = contact.linkedinLabel || '';
-                document.getElementById('contactWhatsappUrl').value = contact.whatsappUrl || '';
-                document.getElementById('contactWhatsappLabel').value = contact.whatsappLabel || '';
-            }
-        }
-
-        function saveContact() {
+        async function saveContact() {
             const contactData = {
                 email: document.getElementById('contactEmail').value,
                 linkedinUrl: document.getElementById('contactLinkedinUrl').value,
@@ -1106,25 +1203,18 @@
                 whatsappLabel: document.getElementById('contactWhatsappLabel').value
             };
 
-            localStorage.setItem('portfolioContact', JSON.stringify(contactData));
-            alert('Contatos salvos com sucesso!');
+            try {
+                await saveToDB('contact', contactData);
+                showToast('Contatos salvos! Visíveis no site agora.');
+            } catch (err) {
+                showToast('Erro ao salvar: ' + err.message, 'error');
+            }
         }
 
         // =====================
         // About/Bio Functions
         // =====================
-        function loadAboutData() {
-            const stored = localStorage.getItem('portfolioAbout');
-            if (stored) {
-                const about = JSON.parse(stored);
-                document.getElementById('aboutTitle').value = about.title || '';
-                document.getElementById('aboutText').value = about.text || '';
-                document.getElementById('aboutLocation').value = about.location || '';
-                document.getElementById('aboutStatus').value = about.status || '';
-            }
-        }
-
-        function saveAbout() {
+        async function saveAbout() {
             const aboutData = {
                 title: document.getElementById('aboutTitle').value,
                 text: document.getElementById('aboutText').value,
@@ -1133,78 +1223,30 @@
                 image: document.getElementById('aboutImage').value || ''
             };
 
-            localStorage.setItem('portfolioAbout', JSON.stringify(aboutData));
-            alert('Bio salva com sucesso!');
-        }
-
-        // Carregar dados iniciais
-        function loadInitialData() {
-            // About
-            const about = JSON.parse(localStorage.getItem('portfolioAbout') || '{}');
-            if (about.title) document.getElementById('aboutTitle').value = about.title;
-            if (about.text) document.getElementById('aboutText').value = about.text;
-            if (about.location) document.getElementById('aboutLocation').value = about.location;
-            if (about.status) document.getElementById('aboutStatus').value = about.status;
-            if (about.image) {
-                document.getElementById('aboutImage').value = about.image;
-                const preview = document.getElementById('aboutImagePreview');
-                preview.src = about.image;
-                preview.style.display = 'block';
+            try {
+                await saveToDB('about', aboutData);
+                showToast('Bio salva! Visível no site agora.');
+            } catch (err) {
+                showToast('Erro ao salvar: ' + err.message, 'error');
             }
-
-            // Contact
-            const contact = JSON.parse(localStorage.getItem('portfolioContact') || '{}');
-            if (contact.email) document.getElementById('contactEmail').value = contact.email;
-            if (contact.linkedinUrl) document.getElementById('contactLinkedinUrl').value = contact.linkedinUrl;
-            if (contact.linkedinLabel) document.getElementById('contactLinkedinLabel').value = contact.linkedinLabel;
-            if (contact.whatsappUrl) document.getElementById('contactWhatsappUrl').value = contact.whatsappUrl;
-            if (contact.whatsappLabel) document.getElementById('contactWhatsappLabel').value = contact.whatsappLabel;
         }
 
-        loadInitialData();
-        renderCasesList();
+        // Verificar sessão ao carregar a página
+        checkExistingSession();
 
         // =====================
-        // Publicação & Full Backup
+        // Backup Completo
         // =====================
         function getAllData() {
             return {
-                cases: JSON.parse(localStorage.getItem('portfolioCases') || '[]'),
-                about: JSON.parse(localStorage.getItem('portfolioAbout') || '{}'),
-                contact: JSON.parse(localStorage.getItem('portfolioContact') || '{}')
+                cases: portfolioData.cases || [],
+                about: portfolioData.about || {},
+                contact: portfolioData.contact || {}
             };
         }
 
-        async function publishSite() {
-            if (!confirm('Deseja realmente sobrescrever o arquivo oficial do site com os dados atuais do CMS?')) return;
-
-            const data = getAllData();
-            const btn = document.querySelector('button[onclick="publishSite()"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '⏳ Salvando...';
-            btn.disabled = true;
-
-            try {
-                const response = await fetch('http://localhost:3000/save-db', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    alert('✅ Sucesso! O arquivo assets/js/db.js foi atualizado.\n\nAgora você pode rodar:\ngit add . && git commit -m "update cms" && git push');
-                } else {
-                    alert('❌ Erro: ' + (result.error || 'Erro desconhecido'));
-                }
-            } catch (error) {
-                console.error(error);
-                alert('❌ Erro de conexão com o servidor local (localhost:3000). Certifique-se que "node server.js" está rodando.');
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+        function publishSite() {
+            showToast('✅ Tudo salvo! As mudanças já estão visíveis no site instantaneamente.', 'success');
         }
 
         function exportFullBackup() {
@@ -1219,6 +1261,7 @@
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
+            showToast('Backup completo exportado!');
         }
 
         function importFullBackup(event) {
@@ -1226,17 +1269,17 @@
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function (e) {
+            reader.onload = async function (e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (data.cases) localStorage.setItem('portfolioCases', JSON.stringify(data.cases));
-                    if (data.about) localStorage.setItem('portfolioAbout', JSON.stringify(data.about));
-                    if (data.contact) localStorage.setItem('portfolioContact', JSON.stringify(data.contact));
+                    if (data.cases)   await saveToDB('cases',   data.cases);
+                    if (data.about)   await saveToDB('about',   data.about);
+                    if (data.contact) await saveToDB('contact', data.contact);
 
-                    alert('✅ Backup importado com sucesso! A página será recarregada.');
-                    window.location.reload();
+                    showToast('✅ Backup importado! Recarregando...');
+                    setTimeout(() => window.location.reload(), 1500);
                 } catch (err) {
-                    alert('❌ Erro ao ler JSON: ' + err.message);
+                    showToast('❌ Erro: ' + err.message, 'error');
                 }
             };
             reader.readAsText(file);

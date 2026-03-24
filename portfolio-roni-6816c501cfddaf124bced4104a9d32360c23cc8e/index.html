@@ -513,8 +513,9 @@
             <p>© 2026 Roni Amorim. Todos os direitos reservados.</p>
         </footer>
 
-        <!-- ✅ DB OFICIAL PUBLICADO PELO CMS -->
-        <script src="assets/js/db.js"></script>
+        <!-- Supabase JS SDK -->
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="assets/js/supabase-config.js"></script>
 
         <script>
             // =====================
@@ -843,11 +844,25 @@
             }
 
             // =====================
-            // Init
+            // Init — carrega do Supabase antes de renderizar
             // =====================
-            loadContact();
-            loadAbout();
-            loadCases();
+            async function initPortfolio() {
+                try {
+                    const { createClient } = window.supabase;
+                    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    const { data, error } = await db.from('portfolio_data').select('key, value');
+                    if (!error && data && data.length > 0) {
+                        window.DB_CONTENT = {};
+                        data.forEach(row => { window.DB_CONTENT[row.key] = row.value; });
+                    }
+                } catch (e) {
+                    console.warn('Supabase indisponível, usando fallback local.', e);
+                }
+                loadContact();
+                loadAbout();
+                loadCases();
+            }
+            initPortfolio();
         </script>
 </body>
 
